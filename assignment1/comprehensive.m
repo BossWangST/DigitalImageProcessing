@@ -49,7 +49,7 @@ subplot(153), imshow(horizontal_mirror), title('水平镜像');
 % staggered
 dx=0.3;
 dy=0.5;
-tform=affine2d([1,dx,0;dy,1,0;0,0,1]);
+tform=affine2d([1,dy,0;dx,1,0;0,0,1]);
 stagger=imwarp(horizontal_mirror,tform);
 subplot(154),imshow(stagger),title('错切');
 % zoom
