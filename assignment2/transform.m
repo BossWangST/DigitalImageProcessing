@@ -1,6 +1,6 @@
 figure(1);
 Image1 = im2double(imread('peppers.JPG'));
-subplot(332), imshow(Image1), title('原图');
+subplot(432), imshow(Image1), title('原图');
 %此时Image1已经读入MATLAB中，并且是一个三维矩阵H*W*C
 Red = Image1(:, :, 1);
 Green = Image1(:, :, 2);
@@ -24,8 +24,30 @@ Image2(:, :, 3) = Green;
 subplot(336), imshow(Image2), title('Green-Blue通道互换');
 %Task2:灰度化
 Image2 = rgb2gray(Image1);
-subplot(3, 3, 8), imshow(Image2), title('灰度化');
-%Task3:灰度化图像的旋转、放大（使用不同的差值方法）
+subplot(3, 3, 7), imshow(Image2), title('灰度化');
+Image2 = .299 * Image1(:, :, 1) + .587 * Image1(:, :, 2) + .114 * Image1(:, :, 3);
+subplot(3, 3, 8), imshow(Image2), title('Manual-灰度化1');
+Image2 = (Image1(:, :, 1) + Image1(:, :, 2) + Image1(:, :, 3)) / 3;
+subplot(3, 3, 9), imshow(Image2), title('Manual-灰度化2');
+%Extra-Task:变换到YCbCr和HSV空间
+figure(4);
+Image2 = rgb2ycbcr(Image1);
+subplot(2, 4, 1), imshow(Image2), title('RGB-to-YCbCr');
+Y = Image2(:, :, 1);
+subplot(2, 4, 2), imshow(Y), title('YCbCr-Y');
+Cb = Image2(:, :, 2);
+subplot(2, 4, 3), imshow(Cb), title('YCbCr-Cb');
+Cr = Image2(:, :, 3);
+subplot(2, 4, 4), imshow(Cr), title('YCbCr-Cr');
+Image2 = rgb2hsv(Image1);
+subplot(2, 4, 5), imshow(Image2), title('RGB-to-HSV');
+H = Image2(:, :, 1);
+subplot(2, 4, 6), imshow(H), title('HSV-H');
+S = Image2(:, :, 2);
+subplot(2, 4, 7), imshow(S), title('HSV-S');
+V = Image2(:, :, 3);
+subplot(2, 4, 8), imshow(V), title('HSV-V');
+%Task3:图像的旋转、放大（使用不同的差值方法）
 figure(2);
 %rotate image
 %MATLAB functions
@@ -91,9 +113,9 @@ Image2 = [Image1, flip_vertical; flip_horizontal, flip_vertical_horizontal];
 figure(3);
 subplot(251), imshow(Image2), title('Joint-Flip');
 %图像代数运算
-Image1=imread('peppers.JPG');
-Image3=imread('fruit.jpg');
-Image3=imresize(Image3,[oldM,oldN],'bilinear');
+Image1 = imread('peppers.JPG');
+Image3 = imread('fruit.jpg');
+Image3 = imresize(Image3, [oldM, oldN], 'bilinear');
 Image2 = imadd(Image1, Image3);
 subplot(252), imshow(Image2), title('Image-Add');
 Image2 = imabsdiff(Image1, Image3);
