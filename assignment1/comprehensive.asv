@@ -1,7 +1,6 @@
 f = im2double(imread('hallback.bmp'));
-%注:本题最后一个图片确实是缩小后的，从右侧变量大小可以看出来，但是由于一共放了5张图，matlab讲比例放到一样大了
-%所以看不出来缩小的效果，但却是是缩小过的图，也可以从代码中看出
-%这个程序仍然使用了我自己写的双线性插值函数进行差值运算
+%本题最后一个变换是缩小，但是由于matlab的subplot在一行内放了5张图
+%所以最后一张缩小的效果看不出来，但实际确实缩小了，从右侧变量栏中可以看到大小确实变小了
 subplot(151), imshow(f), title('原图');
 [oldM, oldN, Channal] = size(f);
 % rotate
@@ -50,7 +49,7 @@ subplot(153), imshow(horizontal_mirror), title('水平镜像');
 % staggered
 dx=0.3;
 dy=0.5;
-tform=affine2d([1,dx,0;dy,1,0;0,0,1]);
+tform=affine2d([1,dy,0;dx,1,0;0,0,1]);
 stagger=imwarp(horizontal_mirror,tform);
 subplot(154),imshow(stagger),title('错切');
 % zoom
