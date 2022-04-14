@@ -66,12 +66,14 @@ subplot(3, 3, 6), imshow(Image2), title('Zoom-Bicubic');
 %Manual functions
 [oldM, oldN, Channal] = size(Image1);
 theta = -pi / 3;
+%get old image's base coordinary
 old = [[0, 0]; [oldM - 1, 0]; [oldM - 1, oldN - 1]; [0, oldN - 1]];
 rotate_xy = zeros(size(old));
 for i = 1:4
     rotate_xy(i, 1) = old(i, 1) * cos(theta) + old(i, 2) * sin(theta);
     rotate_xy(i, 2) = -old(i, 1) * sin(theta) + old(i, 2) * cos(theta);
 end
+%get new image's size
 x_max = max(rotate_xy(:, 1));
 x_min = min(rotate_xy(:, 1));
 y_max = max(rotate_xy(:, 2));
@@ -82,6 +84,7 @@ Image2 = zeros(M, N, Channal);
 for c = 1:Channal
     for x = 0:M - 1
         for y = 0:N - 1
+            %先逆变换得到原坐标系里对坐标，然后在进行双线性插值
             old_x = x + x_min;
             old_y = y + y_min;
             oldx = old_x * cos(theta) - old_y * sin(theta);
@@ -106,8 +109,8 @@ end
 subplot(3, 3, 8), imshow(Image2), title('Zoom-My-bilinear');
 %Task3:图像拼接及代数运算
 %图像的拼接
-flip_horizontal = flip(Image1, 1);
-flip_vertical = flip(Image1, 2);
+flip_horizontal = flip(Image1, 1);%水平翻转
+flip_vertical = flip(Image1, 2);%垂直翻转
 flip_vertical_horizontal = flip(flip_horizontal, 2);
 Image2 = [Image1, flip_vertical; flip_horizontal, flip_vertical_horizontal];
 figure(3);
