@@ -1,0 +1,15 @@
+Image = im2double(imread('Letters-a.jpg'));
+%add noise
+%本题由于需要选出中值滤波的最好噪声对象，故加入多种噪声进行测试
+noiseI_gaus = imnoise(Image, 'gaussian');
+noiseI_salt=imnoise(Image,'salt & pepper');
+noiseI_poisson=imnoise(Image,'poisson');
+subplot(241), imshow(Image), title('原图');
+subplot(242), imshow(noiseI_gaus), title('添加高斯噪声');
+subplot(243),imshow(noiseI_salt),title('添加椒盐噪声');
+subplot(244),imshow(noiseI_poisson),title('添加泊松噪声');
+
+%先使用3*3大小的中值滤波器尝试进行滤波，再使用5*5大小的
+Image_3_gaus=get_image_med(noiseI_gaus,1);%半径为1
+Image_3_salt=get_image_med(noiseI_salt,1);
+Image_3_poisson=get_
