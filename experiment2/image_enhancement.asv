@@ -1,0 +1,76 @@
+Image = im2double(imread("lotus.bmp"));
+%首先将图像灰度化处理
+Image_gray = .299 * Image(:, :, 1) + .587 * Image(:, :, 2) + .114 * Image(:, :, 3);
+%Task1:统计灰度直方图
+[M, N] = size(Image_gray);
+histgram = zeros(256);
+for y = 1:N
+    for x = 1:M
+        %注意这里的+1，需要把灰度值的范围改到[1,256]以便在图中表示
+        histgram(round(Image_gray(x, y)*255)+1) = histgram(round(Image_gray(x, y)*255)+1) + 1;
+    end
+end
+figure(1)
+subplot(2, 2, 1), imshow(Image), title('原图');
+subplot(2, 2, 2), imshow(Image_gray), title('灰度化');
+subplot(2, 2, [3, 4]), stem(histgram(), '.'), title('灰度直方图');
+%Task2:对灰度图像进行分段线性变换
+a = 30 / 255;
+b = 100 / 255;
+c = 75 / 255;
+d = 200 / 255;
+Image2 = Image_gray;
+for y = 1:N
+    for x = 1:M
+        if Image2(x, y) < a
+            Image2(x, y) = Image2(x, y) * c / a;
+        elseif Image2(x, y) < b
+            Image2(x, y) = (Image2(x, y) - a) * (d - c) / (b - a) + c;
+        else
+            %注意这里因为使用了im2double所以所有的灰度值都在0-1之间，所以L-1=1
+            Image2(x, y) = (Image2(x, y) - b) * (1 - d) / (1 - b) + d;
+        end
+    end
+end
+figure(2);
+subplot(2,2,1),imshow(Image_gray),title('灰度化原图');
+subplot(2, 2, 2), imshow(Image2), title('分段线性变换');
+%Task3:对灰度图像直方图均衡化
+Image3 = histeq(Image_gray);
+subplot(2, 2, 3), imshow(Image3), title('直方图均衡化');
+%Task4:伪彩色增强
+Image4 = zeros(M, N, 3);
+for y = 1:N
+    for x = 1:M
+        %Red
+        if (Image_gray(x, y) * 255 < 128)
+            Image4(x, y, 1) = 0;
+        elseif (Image_gray(x, y) * 255 < 192)
+            Image4(x, y, 1) = 4 * Image_gray(x, y) - 2;
+        else
+            Image4(x, y, 1) = 1;
+        end
+        %Green
+        if (Image_gray(x, y) * 255 < 64)
+            Image4(x, y, 2) = 4 * Image_gray(x, y);
+        elseif (Image_gray(x, y) * 255 < 192)
+            Image4(x, y, 2) = 1;
+        else
+            Image4(x, y, 2) = 4 - 4 * Image_gray(x, y);
+        end
+        %Blue
+        if (Image_gray(x, y) * 255 < 64)
+            Image4(x, y, 3) = 1;
+        elseif (Image_gray(x, y) * 255 < 128)
+            Image4(x, y, 3) = 2 - 4 * Image_gray(x, y);
+        else
+            Image4(x, y, 3) = 0;
+        end
+    end
+end
+subplot(2, 2, 4), imshow(Image4), title('伪彩色增强');
+%Task5:对数字图像平滑噪声
+noiseI=imnoise(Image_gray,'gaussian');
+figure(3);
+subplot(2,3,1),imshow(Image),title('灰度化原图');
+subplot(2,3,2),imshow(noiseI),title('添加高斯噪声');
